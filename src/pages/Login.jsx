@@ -2,16 +2,25 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase"; // ✅ Correct path
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login", { email, password });
-    navigate("/dashboard");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("Login successful!");
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err.message);
+      setError(err.message);
+    }
   };
 
   return (
@@ -25,6 +34,11 @@ export default function Login() {
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">
           Welcome Back 👋
         </h2>
+
+        {error && (
+          <div className="text-red-600 text-sm mb-4 text-center">{error}</div>
+        )}
+
         <form onSubmit={handleLogin} className="space-y-6">
           <input
             type="email"

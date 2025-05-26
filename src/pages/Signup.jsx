@@ -2,16 +2,28 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function Signup() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    console.log("Signup", { email, password });
-    navigate("/dashboard");
+    setError("");
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User created:", userCredential.user);
+      alert("Signup successful!");
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Signup error:", err.message);
+      setError(err.message);
+    }
   };
 
   return (
@@ -25,6 +37,11 @@ export default function Signup() {
         <h2 className="text-3xl font-bold text-center text-purple-600 mb-8">
           Create Account ✨
         </h2>
+
+        {error && (
+          <div className="text-red-600 text-sm mb-4 text-center">{error}</div>
+        )}
+
         <form onSubmit={handleSignup} className="space-y-6">
           <input
             type="email"
