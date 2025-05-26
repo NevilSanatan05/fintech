@@ -2,8 +2,8 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase"; // ✅ Correct path
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../firebase";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful!");
@@ -20,6 +21,20 @@ export default function Login() {
     } catch (err) {
       console.error("Login error:", err.message);
       setError(err.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("Google Sign-In user:", user);
+      alert(`Welcome ${user.displayName}!`);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Google Sign-In error:", error.message);
+      setError(error.message);
     }
   };
 
@@ -65,6 +80,13 @@ export default function Login() {
             Login
           </button>
         </form>
+
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition mt-4"
+        >
+          Sign in with Google
+        </button>
 
         <p className="text-sm text-center text-gray-600 mt-6">
           Don’t have an account?{" "}
