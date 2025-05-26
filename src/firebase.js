@@ -23,3 +23,6 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 export { app, analytics, auth };
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: "select_account", // 👈 This forces the account chooser every time
+});
