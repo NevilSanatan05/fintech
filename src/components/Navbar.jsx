@@ -38,7 +38,7 @@ export default function Navbar() {
           FinBot<span className="text-gray-800">.AI</span>
         </Link>
         <div className="space-x-6 flex items-center">
-          <NavLink to="/" className={navLinkClass}>
+          <NavLink to="/home" className={navLinkClass}>
             Home
           </NavLink>
           <NavLink to="/planner" className={navLinkClass}>
@@ -53,11 +53,8 @@ export default function Navbar() {
           <NavLink to="/contact" className={navLinkClass}>
             Contact
           </NavLink>
-          {!user && (
-            <NavLink to="/login" className={navLinkClass}>
-              Login
-            </NavLink>
-          )}
+
+          {/* Removed the login NavLink */}
 
           {user && (
             <button

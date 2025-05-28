@@ -17,7 +17,7 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful!");
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err) {
       console.error("Login error:", err.message);
       setError(err.message);
@@ -31,7 +31,7 @@ export default function Login() {
       const user = result.user;
       console.log("Google Sign-In user:", user);
       alert(`Welcome ${user.displayName}!`);
-      navigate("/dashboard");
+      navigate("/home");
     } catch (error) {
       console.error("Google Sign-In error:", error.message);
       setError(error.message);
