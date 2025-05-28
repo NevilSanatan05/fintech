@@ -33,7 +33,7 @@ export default function Signup() {
       const user = result.user;
       console.log("Google user:", user);
       alert(`Welcome ${user.displayName || user.email}!`);
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err) {
       console.error("Google Sign-In error:", err.message);
       setError("Failed to sign up with Google.");
