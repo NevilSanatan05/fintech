@@ -2,16 +2,42 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../firebase";
 
 export default function Signup() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    console.log("Signup", { email, password });
-    navigate("/dashboard");
+    setError("");
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User created:", userCredential.user);
+      alert("Signup successful!");
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Signup error:", err.message);
+      setError(err.message);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setError("");
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("Google user:", user);
+      alert(`Welcome ${user.displayName || user.email}!`);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Google Sign-In error:", err.message);
+      setError("Failed to sign up with Google.");
+    }
   };
 
   return (
@@ -25,6 +51,11 @@ export default function Signup() {
         <h2 className="text-3xl font-bold text-center text-purple-600 mb-8">
           Create Account ✨
         </h2>
+
+        {error && (
+          <div className="text-red-600 text-sm mb-4 text-center">{error}</div>
+        )}
+
         <form onSubmit={handleSignup} className="space-y-6">
           <input
             type="email"
@@ -51,6 +82,13 @@ export default function Signup() {
             Sign Up
           </button>
         </form>
+
+        <button
+          onClick={handleGoogleSignup}
+          className="w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition mt-4"
+        >
+          Sign up with Google
+        </button>
 
         <p className="text-sm text-center text-gray-600 mt-6">
           Already have an account?{" "}

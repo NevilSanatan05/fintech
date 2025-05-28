@@ -17,9 +17,9 @@ export default function Planner() {
       setResults({
         budgetBreakdown: {
           Rent: "₹10,000",
-          Food: "₹5,000",
+          Grocery: "₹5,000",
           Savings: "₹7,000",
-          Entertainment: "₹3,000",
+          Others: "₹3,000",
         },
         goalTimeline: "Save ₹50,000 in 6 months for your new iPhone",
         tips: [

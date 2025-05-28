@@ -2,16 +2,40 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../firebase";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login", { email, password });
-    navigate("/dashboard");
+    setError("");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("Login successful!");
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err.message);
+      setError(err.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("Google Sign-In user:", user);
+      alert(`Welcome ${user.displayName}!`);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Google Sign-In error:", error.message);
+      setError(error.message);
+    }
   };
 
   return (
@@ -25,6 +49,11 @@ export default function Login() {
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">
           Welcome Back 👋
         </h2>
+
+        {error && (
+          <div className="text-red-600 text-sm mb-4 text-center">{error}</div>
+        )}
+
         <form onSubmit={handleLogin} className="space-y-6">
           <input
             type="email"
@@ -51,6 +80,13 @@ export default function Login() {
             Login
           </button>
         </form>
+
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition mt-4"
+        >
+          Sign in with Google
+        </button>
 
         <p className="text-sm text-center text-gray-600 mt-6">
           Don’t have an account?{" "}
